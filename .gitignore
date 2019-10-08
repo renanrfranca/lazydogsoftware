@@ -11,3 +11,11 @@ Homestead.yaml
 npm-debug.log
 yarn-error.log
 *.pem
+/.idea/deployment.xml
+/.idea/misc.xml
+/.idea/modules.xml
+/.idea/php.xml
+/.idea/projetoPDS.iml
+/.idea/vcs.xml
+/.idea/watcherTasks.xml
+/.idea/webServers.xml

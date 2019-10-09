@@ -11,9 +11,8 @@
 |
 */
 
-Route::get('/', function () {
-    return view('dashboard');
-});
+Route::get('/', 'SimulationController@index')->name('simulation');
+Route::get('/getdados', 'SimulationController@getNewData')->name('getNewData');
 
 Auth::routes();
 

@@ -1240,3 +1240,15 @@ var chart = new ApexCharts(
     options
 );
 chart.render();
+
+$("#btn-update").click(function () {
+   $.getJSON("/getdados", function (json) {
+       var data = new Date(json['data']);
+       var open = json['abertura'];
+       var high = json['maxima'];
+       var low = json['minima'];
+       var close = json['fechamento'];
+
+       alert(data + ' - ' + close);
+   });
+});

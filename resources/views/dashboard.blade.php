@@ -13,6 +13,7 @@
                         <div id="chart-bar">
 
                         </div>
+                        <button id="btn-update" class="btn btn-primary">Atualizar</button>
                     </div>
                 </div>
             </div>

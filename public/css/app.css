@@ -262,6 +262,7 @@ textarea {
   font-family: inherit;
   font-size: inherit;
   line-height: inherit;
+  text-align: center;
 }
 
 button,
@@ -10644,3 +10645,7 @@ a.text-dark:focus {
   }
 }
 
+#input-compra,
+#input-venda{
+  text-align: center;
+}

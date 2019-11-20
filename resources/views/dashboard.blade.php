@@ -21,17 +21,20 @@
                         <div id="chart-candlestick">
 
                         </div>
+                        <div id="chart-bar">
+                            
+                        </div>
 
                         <div class="row">
                             <div class="col">
                                 <div>
-                                    <input type="text" id="input-compra">
+                                    <input type="text" id="input-compra" placeholder="Comprar ativos (un)...">
                                     <button id="btn-compra">Comprar</button>
                                 </div>
                             </div>
                             <div class="col">
                                 <div>
-                                    <input type="text" id="input-venda">
+                                    <input type="text" id="input-venda" placeholder="Vender ativos (un)...">
                                     <button id="btn-venda">Vender</button>
                                 </div>
                             </div>

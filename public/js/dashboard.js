@@ -38,6 +38,78 @@ var chartCandlestick = new ApexCharts(
 );
 chartCandlestick.render();
 
+//ISSUE: options nao estao corretas
+/*
+var optionsChartBar = {
+        chart: {
+            height: 160,
+            type: 'bar',
+            brush: {
+                enabled: true,
+                target: 'candles'
+            },
+            selection: {
+                enabled: true,
+                xaxis: {
+                    min: new Date('20 Jan 2017').getTime(),
+                    max: new Date('10 Dec 2017').getTime()
+                },
+                fill: {
+                    color: '#ccc',
+                    opacity: 0.4
+                },
+                stroke: {
+                    color: '#0D47A1',
+                }
+            },
+        },
+        dataLabels: {
+            enabled: false
+        },
+        plotOptions: {
+            bar: {
+                columnWidth: '80%',
+                colors: {
+                    ranges: [
+                        {
+                            from: -1000,
+                            to: 0,
+                            color: '#F15B46'
+                        }, {
+                            from: 1,
+                            to: 10000,
+                            color: '#FEB019'
+                        }
+                    ],
+                   
+                },
+            }        
+        },
+        stroke: {
+            width: 0
+        },
+        series: [{
+            data: []
+        }],
+        xaxis: {
+            type: 'datetime',
+            axisBorder: {
+                offsetX: 13
+            }
+        },
+        yaxis: {
+            labels: {
+                show: false
+            }
+        }
+    
+}
+
+var chartBar = new ApexCharts(
+    document.querySelector("#chart-bar"),
+);
+//chartBar.render();
+*/
 getData();
 var interval = window.setInterval(function(){
     getData();
@@ -106,17 +178,17 @@ function appendData(newData) {
     }]);
 }
 
-function compra(custo) {
-    qtd = custo/precoAtual;
+function compra(qtd) {
+    
 
-    if (custo > saldo || precoAtual == 0) {
-        alert("Saldo insuficiente para compra");
+    if (qtd > estoque || precoAtual == 0) {
+        alert("Quantidade indisponível para compra!");
         return false;
     }
 
-    saldo = saldo - custo;
-
-    estoque = estoque + qtd;
+    valor_compra = qtd * precoAtual; //calcula o total da compra
+    saldo = saldo - valor_compra; //subtrai do caixa atual
+    estoque = estoque + qtd; //subtrai do estoque atual
 
     atualiza_valores();
     return true;

@@ -46,7 +46,7 @@ var interval = window.setInterval(function(){
 
         alert ("Resultado final: " + moneyFormat(saldo + (estoque * precoAtual)));
     }
-}, 3000);
+}, 5000);
 
 function getData() {
 

@@ -194,8 +194,10 @@ function appendData(newData) {
 }
 
 function compra(qtd) {
-    
-
+    if (isNaN(qtd)){
+        alert("Digite uma quantidade válida");
+        return false;
+    }
     if (qtd > estoque || precoAtual == 0) {
         alert("Quantidade indisponível para compra!");
         return false;

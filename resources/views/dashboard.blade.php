@@ -28,13 +28,13 @@
                         <div class="row">
                             <div class="col">
                                 <div>
-                                    <input class="money" type="text" id="input-compra" placeholder="Comprar ativos (un)...">
+                                    <input required="true" class="money" type="text" id="input-compra" placeholder="Comprar ativos (un)...">
                                     <button id="btn-compra" class="btn btn-success">Comprar</button>
                                 </div>
                             </div>
                             <div class="col">
                                 <div>
-                                    <input class="money" type="text" id="input-venda" placeholder="Vender ativos (un)...">
+                                    <input required="true" class="money" type="text" id="input-venda" placeholder="Vender ativos (un)...">
                                     <button id="btn-venda" class="btn btn-danger" >Vender</button>
                                 </div>
                             </div>

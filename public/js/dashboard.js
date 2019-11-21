@@ -2,6 +2,7 @@ var saldo = 100000000.00;
 var estoque = 1000;
 var precoAtual = 0;
 var fim = false;
+var noticias = [];
 
 function moneyFormat(value) {
     return parseFloat(value).toLocaleString('pt-BR', { minimumFractionDigits: 2, style: 'currency', currency: 'BRL' });
@@ -9,6 +10,11 @@ function moneyFormat(value) {
 
 function quantityFormat(value) {
     return parseFloat(value).toLocaleString('pt-BR', { maximumFractionDigits: 0, style: 'decimal'});
+}
+
+function dateFormat(dateString) {
+    var date = new Date(dateString);
+    return date.toLocaleDateString('pt-br');
 }
 
 var optionsCandlestick = {
@@ -81,9 +87,9 @@ var optionsChartBar = {
                             color: '#FEB019'
                         }
                     ],
-                   
+
                 },
-            }        
+            }
         },
         stroke: {
             width: 0
@@ -102,7 +108,7 @@ var optionsChartBar = {
                 show: false
             }
         }
-    
+
 }
 
 var chartBar = new ApexCharts(
@@ -116,9 +122,16 @@ var interval = window.setInterval(function(){
     if (fim == true) {
         clearInterval(interval);
 
-        alert ("Resultado final: " + moneyFormat(saldo + (estoque * precoAtual)));
+        var result = "Resultado final: " + moneyFormat(saldo + (estoque * precoAtual));
+
+        $("#resultado").text(result);
+
+        $(".modal").modal({
+            backdrop: 'static',
+            keyboard: false
+        });
     }
-}, 5000);
+}, 3000);
 
 function getData() {
 
@@ -130,24 +143,28 @@ function getData() {
             }
         }
 
-        var date = new Date(json['data']);
-        var open = parseFloat(json['abertura']);
-        var high = parseFloat(json['maxima']);
-        var low = parseFloat(json['minima']);
-        var close = parseFloat(json['fechamento']);
+        var values = json['values'];
+
+        var date = new Date(values['data']);
+        var open = parseFloat(values['abertura']);
+        var high = parseFloat(values['maxima']);
+        var low = parseFloat(values['minima']);
+        var close = parseFloat(values['fechamento']);
 
         data = {
             x: date,
             y: [open, high, low, close]
         };
 
-        console.log(data);
-
         precoAtual = close;
 
         appendData(data);
 
         atualiza_valores();
+
+        if (typeof json['news'] !== 'undefined') {
+            updateNews(json['news']);
+        }
 
         return true;
     });
@@ -179,7 +196,7 @@ function appendData(newData) {
 }
 
 function compra(qtd) {
-    
+
 
     if (qtd > estoque || precoAtual == 0) {
         alert("Quantidade indisponível para compra!");
@@ -232,4 +249,21 @@ function atualiza_valores() {
     $("#display-saldo").text("Saldo: " + displaySaldo);
     $("#display-preco").text("Preço atual: " + displayPreco);
     $("#display-estoque").text("Estoque: " + displayEstoque + " un");
+}
+
+function updateNews(news) {
+    noticias.unshift(news);
+    if (noticias.length > 5) {
+        noticias.pop();
+    }
+
+    var list = '<ul class="list-group">';
+
+    noticias.forEach(function (noticia) {
+       list = list + '<li class="list-group-item">' + dateFormat(noticia['date']) + ' - ' + noticia['title'] + '</li>';
+    });
+
+    list = list + '</ul>';
+
+    $("#news").html(list);
 }

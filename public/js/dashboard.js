@@ -3,6 +3,21 @@ var estoque = 1000;
 var precoAtual = 0;
 var fim = false;
 
+
+$(document).ready(function(){
+    console.log("DOCUMENTO FEITO!")
+    $(".money").inputmask("decimal",{        
+        alias: 'numeric',
+        groupSeparator: '.',
+        autoGroup: true,
+        digits: 2,
+        radixPoint: ",",
+        digitsOptional: false,
+        allowMinus: false,        
+        placeholder: ''             
+      });
+});
+
 function moneyFormat(value) {
     return parseFloat(value).toLocaleString('pt-BR', { minimumFractionDigits: 2, style: 'currency', currency: 'BRL' });
 }

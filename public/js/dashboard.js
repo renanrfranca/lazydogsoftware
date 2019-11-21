@@ -4,6 +4,20 @@ var precoAtual = 0;
 var fim = false;
 var noticias = [];
 
+
+$(document).ready(function(){
+    $(".money").inputmask("decimal",{
+        alias: 'numeric',
+        groupSeparator: '.',
+        autoGroup: true,
+        digits: 2,
+        radixPoint: ",",
+        digitsOptional: false,
+        allowMinus: false,
+        placeholder: ''
+      });
+});
+
 function moneyFormat(value) {
     return parseFloat(value).toLocaleString('pt-BR', { minimumFractionDigits: 2, style: 'currency', currency: 'BRL' });
 }
@@ -196,8 +210,10 @@ function appendData(newData) {
 }
 
 function compra(qtd) {
-
-
+    if (isNaN(qtd)){
+        alert("Digite uma quantidade válida");
+        return false;
+    }
     if (qtd > estoque || precoAtual == 0) {
         alert("Quantidade indisponível para compra!");
         return false;

@@ -210,7 +210,7 @@ function appendData(newData) {
 }
 
 function compra(qtd) {
-    if (isNaN(qtd)){
+    if (isNaN(qtd) || qtd <= 0){
         alert("Digite uma quantidade válida");
         return false;
     }

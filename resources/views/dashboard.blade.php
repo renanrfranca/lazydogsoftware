@@ -59,7 +59,7 @@
                 </div>
                 <div class="modal-body">
                     <p id="resultado"></p>
-                    <button class="btn btn-light" onclick="location.reload()">Reiniciar?</button>
+                    <button class="btn btn-secondary" onclick="location.reload()">Clique para reiniciar</button>
                 </div>
             </div>
         </div>

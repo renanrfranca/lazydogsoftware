@@ -59,77 +59,71 @@ var chartCandlestick = new ApexCharts(
 chartCandlestick.render();
 
 //ISSUE: options nao estao corretas
-/*
 var optionsChartBar = {
-        chart: {
-            height: 160,
-            type: 'bar',
-            brush: {
-                enabled: true,
-                target: 'candles'
-            },
-            selection: {
-                enabled: true,
-                xaxis: {
-                    min: new Date('20 Jan 2017').getTime(),
-                    max: new Date('10 Dec 2017').getTime()
-                },
-                fill: {
-                    color: '#ccc',
-                    opacity: 0.4
-                },
-                stroke: {
-                    color: '#0D47A1',
-                }
-            },
+    chart: {
+        height: 160,
+        type: 'bar',
+        brush: {
+            enabled: true,
+            target: 'candles'
         },
-        dataLabels: {
-            enabled: false
+        selection: {
+            enabled: true,
+            xaxis: {},
+            fill: {
+                color: '#ccc',
+                opacity: 0.4
+            },
+            stroke: {
+                color: '#0D47A1',
+            }
         },
-        plotOptions: {
-            bar: {
-                columnWidth: '80%',
-                colors: {
-                    ranges: [
-                        {
-                            from: -1000,
-                            to: 0,
-                            color: '#F15B46'
-                        }, {
-                            from: 1,
-                            to: 10000,
-                            color: '#FEB019'
-                        }
-                    ],
+    },
+    plotOptions: {
+        bar: {
+            columnWidth: '80%',
+            colors: {
+                ranges: [
+                    {
+                        from: -10000,
+                        to: 0,
+                        color: '#F15B46'
+                    }, {
+                        from: 1,
+                        to: 10000,
+                        color: '#FEB019'
+                    }
+                ],
 
-                },
-            }
-        },
-        stroke: {
-            width: 0
-        },
-        series: [{
-            data: []
-        }],
-        xaxis: {
-            type: 'datetime',
-            axisBorder: {
-                offsetX: 13
-            }
-        },
-        yaxis: {
-            labels: {
-                show: false
-            }
+            },
         }
+    },
+    stroke: {
+        width: 0
+    },
+    series: [{
+        name: "Serie anual",
+        data: []
+    }],
+    xaxis: {
+        type: 'datetime',
+        axisBorder: {
+            offsetX: 13
+        }
+    },
+    yaxis: {
+        labels: {
+            show: true
+        }
+    }
 
 }
 
 var chartBar = new ApexCharts(
-    document.querySelector("#chart-bar"),
+    document.querySelector("#chart-bar"), optionsChartBar
 );
-//chartBar.render();
-*/
+chartBar.render();
+
 getData();
 var interval = window.setInterval(function(){
     getData();
@@ -170,9 +164,17 @@ function getData() {
             y: [open, high, low, close]
         };
 
+        dataBar = {
+            x: date,
+            y: (close - open)
+        };
+
+        //console.log(data);
+        console.log(dataBar);
+
         precoAtual = close;
 
-        appendData(data);
+        appendData(data, dataBar);
 
         atualiza_valores();
 
@@ -184,7 +186,7 @@ function getData() {
     });
 }
 
-function appendData(newData) {
+function appendData(newData, newDataBar) {
     var numDataPoints = chartCandlestick.w.globals.dataPoints;
 
     var seriesO = chartCandlestick.w.globals.seriesCandleO;
@@ -194,18 +196,28 @@ function appendData(newData) {
     var seriesX = chartCandlestick.w.globals.seriesX; // Data
 
     arrayData = [];
+    arrayDataBar = [];
 
     for (i=0;i<numDataPoints;i++) {
         arrayData.push({
             x: seriesX[0][i],
             y: [seriesO[0][i], seriesH[0][i], seriesL[0][i], seriesC[0][i]]
         });
+        arrayDataBar.push({
+            x: seriesX[0][i],
+            y: [seriesC[0][i] - seriesO[0][i]]
+        });
     }
 
     arrayData.push(newData);
+    arrayDataBar.push(newDataBar);
 
     chartCandlestick.updateSeries([{
         data: arrayData
+    }]);
+
+    chartBar.updateSeries([{
+        data: arrayDataBar
     }]);
 }
 
@@ -246,9 +258,9 @@ function venda(qtd) {
 }
 
 $("#btn-compra").click(function () {
-   value = parseFloat($("#input-compra").val());
+   qtd = parseFloat($("#input-compra").val());
 
-   compra(value);
+   compra(qtd);
 });
 
 $("#btn-venda").click(function () {

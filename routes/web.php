@@ -11,9 +11,18 @@
 |
 */
 
-Route::get('/', 'SimulationController@index')->name('simulation');
+// Route::get('/', 'SimulationController@index')->name('simulation');
 Route::get('/getdados', 'SimulationController@getNewData')->name('getNewData');
 
 Auth::routes();
 
-Route::get('/home', 'HomeController@index')->name('home');
+Route::redirect('/home', '/');
+Route::get('/', 'HomeController@index')->name('home');
+
+Route::get('/admin', 'AdminController@index')->name('admin')->middleware('admin');
+
+Route::post('/session', 'SessionController@create')->name('session.create')->middleware('admin');
+Route::get('/session/{id}', 'SessionController@index')->name('session')->middleware('admin');
+Route::post('/session/join', 'SessionController@join')->name('session.join')->middleware('auth');
+
+Route::get('/simulation/{session_id}', 'SimulationController@index')->name('simulation')->middleware('auth');

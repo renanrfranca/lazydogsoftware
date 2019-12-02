@@ -2,18 +2,18 @@
 
 namespace App\Http\Controllers;
 
+use App\Sessao;
 use Illuminate\Http\Request;
-use App\Serie_futuro;
+use App\Serie;
 use App\News;
 use Illuminate\Support\Carbon;
 
 class SimulationController extends Controller
 {
-    public function index() {
-        $first_date = Serie_futuro::oldest('data')->first()->data;
-        session(['next_date' => $first_date]);
-        session(['num_requests' => 0]);
-        return view('dashboard');
+    public function index($session_id) {
+        $session = Sessao::findOrFail($session_id);
+
+        return view('test', compact('session'));
     }
 
     public function getNewData() {
@@ -24,7 +24,7 @@ class SimulationController extends Controller
         session(['num_requests' => $num_requests + 1]);
 
         // Recupera do banco os dados da primeira data maior ou igual a requisitada
-        $values = Serie_futuro::oldest('data')->where('data', '>=', $date->toDateString())->first();
+        $values = Serie::oldest('data')->where('data', '>=', $date->toDateString())->first();
 
         if (!isset($values) || $num_requests > 5) {
             return '{"status": "fim"}';

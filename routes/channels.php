@@ -1,5 +1,7 @@
 <?php
 
+use App\Sessao;
+
 /*
 |--------------------------------------------------------------------------
 | Broadcast Channels
@@ -11,6 +13,14 @@
 |
 */
 
-Broadcast::channel('App.User.{id}', function ($user, $id) {
-    return (int) $user->id === (int) $id;
+// Broadcast::channel('App.User.{id}', function ($user, $id) {
+//     return (int) $user->id === (int) $id;
+// });
+
+Broadcast::channel('session.{id}', function ($user, $id) {
+    // $session = Sessao::find($id);
+    //
+    // return $session->users()->contains($user);
+
+    return true;
 });

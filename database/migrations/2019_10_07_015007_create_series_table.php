@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateSerieFuturosTable extends Migration
+class CreateSeriesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,17 @@ class CreateSerieFuturosTable extends Migration
      */
     public function up()
     {
-        Schema::create('serie_futuros', function (Blueprint $table) {
-            $table->date('data')->primary();
+        Schema::create('series', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->unsignedBigInteger('exercicio_id');
+            $table->date('data');
+            $table->unsignedTinyInteger('tipo')->comment('1 = futuro, 2 = spot');
             $table->decimal('fechamento');
             $table->decimal('abertura');
             $table->decimal('minima');
             $table->decimal('maxima');
+
+            $table->index(['exercicio_id', 'data']);
         });
     }
 

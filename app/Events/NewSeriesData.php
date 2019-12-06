@@ -15,15 +15,17 @@ class NewSeriesData implements ShouldBroadcast
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     public $session;
+    public $data;
 
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct($session)
+    public function __construct($session, $data)
     {
         $this->session = $session;
+        $this->data = $data;
     }
 
     /**
@@ -33,6 +35,6 @@ class NewSeriesData implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return new PrivateChannel('session.' . $this->session->id);
+        return new PresenceChannel('session.' . $this->session->id);
     }
 }

@@ -1,6 +1,7 @@
 <?php
 
 use App\Sessao;
+use App\User;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,10 +18,23 @@ use App\Sessao;
 //     return (int) $user->id === (int) $id;
 // });
 
-Broadcast::channel('session.{id}', function ($user, $id) {
-    // $session = Sessao::find($id);
-    //
-    // return $session->users()->contains($user);
+Broadcast::channel('session.{id}', function (User $user, $id) {
+    if (Auth::id() == 1) { // is admin
+        return [
+            'name' => 'admin',
+            'id' => $user->id
+        ];
+    }
 
-    return true;
+    if ($user->canJoinSession((int) $id)) {
+        $user_data = [
+            'id' => $user->id,
+            'name' => $user->name,
+            'email' => $user->email,
+            'group_name' => $user->sessions->find($id)->pivot->nome_grupo,
+            'pontuacao' => $user->sessions->find($id)->pivot->pontuacao,
+        ];
+
+        return $user_data;
+    }
 });

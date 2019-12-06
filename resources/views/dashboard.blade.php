@@ -64,4 +64,7 @@
             </div>
         </div>
     </div>
+
+    <script>var session_id = {{ $session->id }};</script>
+    <script src="{{ asset('js/dashboard.js') }}" defer></script>
 @endsection

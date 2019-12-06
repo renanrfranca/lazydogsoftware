@@ -15,11 +15,21 @@
     </div>
 
     <script>
+        var users;
 
         window.onload = function() {
-            Echo.private(`session.{{$session->id}}`)
+            Echo.join(`session.{{$session->id}}`)
+                .here((users) => {
+                    this.users = users;
+                })
+                .joining((user) => {
+                    console.log(user.name);
+                })
+                .leaving((user) => {
+                    console.log(user.name);
+                })
                 .listen('NewSeriesData', (e) => {
-                    console.log(e.session);
+                    console.log(e.data.values);
                 });
         };
     </script>

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Exercise;
 use App\Sessao;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 
 class SessionController extends Controller
@@ -34,7 +35,13 @@ class SessionController extends Controller
     public function join(Request $request) {
         $group_name = $request->nome;
         $session_id = $request->code;
+        $user = Auth::user();
 
-        $session = Sessao::findOrFail($session_id);
+        if (! $user->sessions()->where('sessoes.id', $session_id)->exists()) {
+            $session = Sessao::findOrFail($session_id);
+            $session->users()->save($user, ['nome_grupo' => $group_name]);
+        }
+
+        return redirect()->route('simulation', ['session_id' => $session_id]);
     }
 }

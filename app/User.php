@@ -38,6 +38,10 @@ class User extends Authenticatable
     ];
 
     public function sessions() {
-        return $this->belongsToMany(Sessao::class, 'user_sessoes');
+        return $this->belongsToMany(Sessao::class, 'users_sessoes')->withPivot('nome_grupo', 'pontuacao');
+    }
+
+    public function canJoinSession($session_id) {
+        return $this->sessions()->where('sessoes.id', $session_id)->exists();
     }
 }

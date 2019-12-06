@@ -16,6 +16,23 @@ $(document).ready(function(){
         allowMinus: false,
         placeholder: ''
       });
+
+    var users;
+
+    Echo.join('session.' + session_id)
+        .here((users) => {
+            this.users = users;
+        })
+        .joining((user) => {
+            console.log(user.name);
+        })
+        .leaving((user) => {
+            console.log(user.name);
+        })
+        .listen('NewSeriesData', (e) => {
+            console.log(e.data.values);
+            handleData(e.data);
+        });
 });
 
 function moneyFormat(value) {
@@ -124,66 +141,56 @@ var chartBar = new ApexCharts(
 );
 chartBar.render();
 
-getData();
-var interval = window.setInterval(function(){
-    getData();
-    if (fim == true) {
-        clearInterval(interval);
+// getData();
+// var interval = window.setInterval(function(){
+//     getData();
+//     if (fim == true) {
+//         clearInterval(interval);
+//
+//         var result = "Resultado final: " + moneyFormat(saldo + (estoque * precoAtual));
+//
+//         $("#resultado").text(result);
+//
+//         $(".modal").modal({
+//             backdrop: 'static',
+//             keyboard: false
+//         });
+//     }
+// }, 3000);
 
-        var result = "Resultado final: " + moneyFormat(saldo + (estoque * precoAtual));
+function handleData(socket_data) {
+    var values = socket_data['values'];
 
-        $("#resultado").text(result);
+    var date = new Date(values['data']);
+    var open = parseFloat(values['abertura']);
+    var high = parseFloat(values['maxima']);
+    var low = parseFloat(values['minima']);
+    var close = parseFloat(values['fechamento']);
 
-        $(".modal").modal({
-            backdrop: 'static',
-            keyboard: false
-        });
+    data = {
+        x: date,
+        y: [open, high, low, close]
+    };
+
+    dataBar = {
+        x: date,
+        y: (close - open)
+    };
+
+    //console.log(data);
+    console.log(dataBar);
+
+    precoAtual = close;
+
+    appendData(data, dataBar);
+
+    atualiza_valores();
+
+    if (typeof socket_data['news'] !== 'undefined') {
+        updateNews(socket_data['news']);
     }
-}, 3000);
 
-function getData() {
-
-    $.getJSON("/getdados", function (json) {
-        if (typeof json.status !== 'undefined') {
-            if (json.status === "fim") {
-                fim = true;
-                return;
-            }
-        }
-
-        var values = json['values'];
-
-        var date = new Date(values['data']);
-        var open = parseFloat(values['abertura']);
-        var high = parseFloat(values['maxima']);
-        var low = parseFloat(values['minima']);
-        var close = parseFloat(values['fechamento']);
-
-        data = {
-            x: date,
-            y: [open, high, low, close]
-        };
-
-        dataBar = {
-            x: date,
-            y: (close - open)
-        };
-
-        //console.log(data);
-        console.log(dataBar);
-
-        precoAtual = close;
-
-        appendData(data, dataBar);
-
-        atualiza_valores();
-
-        if (typeof json['news'] !== 'undefined') {
-            updateNews(json['news']);
-        }
-
-        return true;
-    });
+    return true;
 }
 
 function appendData(newData, newDataBar) {

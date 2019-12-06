@@ -2,18 +2,20 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\NewSeriesData;
 use App\Sessao;
 use Illuminate\Http\Request;
 use App\Serie;
 use App\News;
 use Illuminate\Support\Carbon;
+use Faker;
 
 class SimulationController extends Controller
 {
     public function index($session_id) {
         $session = Sessao::findOrFail($session_id);
 
-        return view('test', compact('session'));
+        return view('dashboard', compact('session'));
     }
 
     public function getNewData() {
@@ -47,5 +49,33 @@ class SimulationController extends Controller
 
         // Retorna valores
         return response()->json($return);
+    }
+
+    public function feed(Request $request) {
+        $session = Sessao::findOrFail($request->session_id);
+        $date = Carbon::createFromDate(2019,01,01);
+        $faker = Faker\Factory::create();
+
+        for ($i=0;$i<100; $i++) {
+            $data = [
+                'news' => [
+                    'date' => $date->toDateString(),
+                    'title' => $faker->text(100)
+                ],
+                'values' => [
+                    'data' => $date->toDateString(),
+                    'abertura' => rand(1, 1000),
+                    'maxima' => rand(1, 1000),
+                    'minima' => rand(1, 1000),
+                    'fechamento' => rand(1, 1000)
+                ]
+            ];
+
+            sleep(3);
+
+            broadcast(new newSeriesData($session, $data));
+
+            $date->addDay();
+        }
     }
 }

@@ -9,6 +9,6 @@ class Sessao extends Model
     protected $table = 'sessoes';
 
     public function users() {
-        return $this->belongsToMany(User::class, 'user_sessoes');
+        return $this->belongsToMany(User::class, 'users_sessoes')->withPivot('nome_grupo', 'pontuacao');
     }
 }

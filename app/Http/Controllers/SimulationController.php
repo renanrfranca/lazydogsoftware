@@ -53,29 +53,43 @@ class SimulationController extends Controller
 
     public function feed(Request $request) {
         $session = Sessao::findOrFail($request->session_id);
-        $date = Carbon::createFromDate(2019,01,01);
+        $date = Carbon::createFromDate(2012,01,02);
         $faker = Faker\Factory::create();
 
-        for ($i=0;$i<100; $i++) {
+        $spot = Serie::where('exercicio_id', $session->exercicio_id)->where('tipo', 2)->orderBy('data')->get();
+        $futuro = Serie::where('exercicio_id', $session->exercicio_id)->where('tipo', 1)->orderBy('data')->get();
+        $news = News::where('exercicio_id', $session->exercicio_id)->orderBy('data')->get();
+
+
+        for ($i = 0; $i < 35; $i++) {
             $data = [
                 'news' => [
                     'date' => $date->toDateString(),
-                    'title' => $faker->text(100)
+                    'title' => $news[$i]->titulo
                 ],
                 'values' => [
                     'data' => $date->toDateString(),
-                    'abertura' => rand(1, 1000),
-                    'maxima' => rand(1, 1000),
-                    'minima' => rand(1, 1000),
-                    'fechamento' => rand(1, 1000)
+                    'abertura' => $spot[$i]->abertura,
+                    'maxima' => $spot[$i]->maxima,
+                    'minima' => $spot[$i]->minima,
+                    'fechamento' => $spot[$i]->fechamento
+                ],
+                'values_futuro' => [
+                    'data' => $date->toDateString(),
+                    'abertura' => $futuro[$i]->abertura,
+                    'maxima' => $futuro[$i]->maxima,
+                    'minima' => $futuro[$i]->minima,
+                    'fechamento' => $futuro[$i]->fechamento
                 ]
             ];
 
-            sleep(3);
+            sleep(1);
 
             broadcast(new newSeriesData($session, $data));
 
             $date->addDay();
         }
+
+        broadcast(new newSeriesData($session, 'fim'));
     }
 }

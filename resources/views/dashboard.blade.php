@@ -1,9 +1,9 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="container">
+    <div class="container-fluid">
         <div class="row justify-content-center">
-            <div class="col-md-10">
+            <div class="col">
                 <div class="card">
                     <div class="card-body">
                         <div class="row">
@@ -18,21 +18,34 @@
                             </div>
                         </div>
 
-                        <div id="chart-candlestick">
-
-                        </div>
-                        <div id="chart-bar">
-
-                        </div>
-
                         <div class="row">
                             <div class="col">
+                                <div id="chart-candlestick">
+
+                                </div>
+                                <div id="chart-bar">
+
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div id="chart-candlestick2">
+
+                                </div>
+                                <div id="chart-bar2">
+
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="row">
+                            <div class="col justify-content-center">
                                 <div>
                                     <input required="true" class="money" type="text" id="input-compra" placeholder="Comprar ativos (un)...">
                                     <button id="btn-compra" class="btn btn-success">Comprar</button>
                                 </div>
                             </div>
-                            <div class="col">
+                            <div class="col justify-content-center">
                                 <div>
                                     <input required="true" class="money" type="text" id="input-venda" placeholder="Vender ativos (un)...">
                                     <button id="btn-venda" class="btn btn-danger" >Vender</button>

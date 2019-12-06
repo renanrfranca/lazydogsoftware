@@ -1,4 +1,4 @@
-var saldo = 100000000.00;
+var saldo = 10000000.00;
 var estoque = 1000;
 var precoAtual = 0;
 var fim = false;
@@ -141,25 +141,117 @@ var chartBar = new ApexCharts(
 );
 chartBar.render();
 
-// getData();
-// var interval = window.setInterval(function(){
-//     getData();
-//     if (fim == true) {
-//         clearInterval(interval);
-//
-//         var result = "Resultado final: " + moneyFormat(saldo + (estoque * precoAtual));
-//
-//         $("#resultado").text(result);
-//
-//         $(".modal").modal({
-//             backdrop: 'static',
-//             keyboard: false
-//         });
-//     }
-// }, 3000);
+// -------------- FUTURO -----------------
+
+var optionsCandlestick2 = {
+    chart: {
+        id: 'candles2',
+        height: 290,
+        type: 'candlestick',
+    },
+    plotOptions: {
+        candlestick: {
+            colors: {
+                upward: '#3C90EB',
+                downward: '#DF7D46'
+            }
+        }
+    },
+    series: [{
+        data: []
+    }],
+    xaxis: {
+        type: 'datetime'
+    }
+}
+var chartCandlestick2 = new ApexCharts(
+    document.querySelector("#chart-candlestick2"),
+    optionsCandlestick2
+);
+chartCandlestick2.render();
+
+//ISSUE: options nao estao corretas
+var optionsChartBar2 = {
+    chart: {
+        height: 160,
+        type: 'bar',
+        brush: {
+            enabled: true,
+            target: 'candles'
+        },
+        selection: {
+            enabled: true,
+            xaxis: {},
+            fill: {
+                color: '#ccc',
+                opacity: 0.4
+            },
+            stroke: {
+                color: '#0D47A1',
+            }
+        },
+    },
+    plotOptions: {
+        bar: {
+            columnWidth: '80%',
+            colors: {
+                ranges: [
+                    {
+                        from: -10000,
+                        to: 0,
+                        color: '#F15B46'
+                    }, {
+                        from: 1,
+                        to: 10000,
+                        color: '#FEB019'
+                    }
+                ],
+
+            },
+        }
+    },
+    stroke: {
+        width: 0
+    },
+    series: [{
+        name: "Serie anual",
+        data: []
+    }],
+    xaxis: {
+        type: 'datetime',
+        axisBorder: {
+            offsetX: 13
+        }
+    },
+    yaxis: {
+        labels: {
+            show: true
+        }
+    }
+
+};
+
+var chartBar2 = new ApexCharts(
+    document.querySelector("#chart-bar2"), optionsChartBar2
+);
+chartBar2.render();
+
 
 function handleData(socket_data) {
+    if (socket_data == 'fim') {
+        var result = "Resultado final: " + moneyFormat(saldo + (estoque * precoAtual));
+
+        $("#resultado").text(result);
+
+        $(".modal").modal({
+            backdrop: 'static',
+            keyboard: false
+        });
+        return;
+    }
+
     var values = socket_data['values'];
+    var values_futuro = socket_data['values_futuro'];
 
     var date = new Date(values['data']);
     var open = parseFloat(values['abertura']);
@@ -178,11 +270,31 @@ function handleData(socket_data) {
     };
 
     //console.log(data);
-    console.log(dataBar);
+    // console.log(dataBar);
 
     precoAtual = close;
 
     appendData(data, dataBar);
+
+    var date = new Date(values_futuro['data']);
+    var open = parseFloat(values_futuro['abertura']);
+    var high = parseFloat(values_futuro['maxima']);
+    var low = parseFloat(values_futuro['minima']);
+    var close = parseFloat(values_futuro['fechamento']);
+
+    data = {
+        x: date,
+        y: [open, high, low, close]
+    };
+
+    dataBar = {
+        x: date,
+        y: (close - open)
+    };
+
+    appendData2(data, dataBar);
+
+    saldo = saldo - 1.6 * estoque;
 
     atualiza_valores();
 
@@ -224,6 +336,41 @@ function appendData(newData, newDataBar) {
     }]);
 
     chartBar.updateSeries([{
+        data: arrayDataBar
+    }]);
+}
+
+function appendData2(newData, newDataBar) {
+    var numDataPoints = chartCandlestick2.w.globals.dataPoints;
+
+    var seriesO = chartCandlestick2.w.globals.seriesCandleO;
+    var seriesH = chartCandlestick2.w.globals.seriesCandleH;
+    var seriesL = chartCandlestick2.w.globals.seriesCandleL;
+    var seriesC = chartCandlestick2.w.globals.seriesCandleC;
+    var seriesX = chartCandlestick2.w.globals.seriesX; // Data
+
+    arrayData = [];
+    arrayDataBar = [];
+
+    for (i=0;i<numDataPoints;i++) {
+        arrayData.push({
+            x: seriesX[0][i],
+            y: [seriesO[0][i], seriesH[0][i], seriesL[0][i], seriesC[0][i]]
+        });
+        arrayDataBar.push({
+            x: seriesX[0][i],
+            y: [seriesC[0][i] - seriesO[0][i]]
+        });
+    }
+
+    arrayData.push(newData);
+    arrayDataBar.push(newDataBar);
+
+    chartCandlestick2.updateSeries([{
+        data: arrayData
+    }]);
+
+    chartBar2.updateSeries([{
         data: arrayDataBar
     }]);
 }

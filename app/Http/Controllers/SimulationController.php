@@ -83,11 +83,11 @@ class SimulationController extends Controller
                 ]
             ];
 
-            sleep(1);
-
             broadcast(new newSeriesData($session, $data));
 
             $date->addDay();
+
+            sleep(5);
         }
 
         broadcast(new newSeriesData($session, 'fim'));

@@ -11,8 +11,6 @@
                         <h1>Código: {{$session->id}}</h1>
 
                         <a name="btn-iniciar" id="btn-iniciar" class="btn btn-success" href="#" role="button">Iniciar</a>
-                        <a name="btn-reiniciar" id="btn-reiniciar" class="btn btn-warning" href="#" role="button">Reiniciar</a>
-                        <a name="btn-finalizar" id="btn-finalizar" class="btn btn-danger" href="#" role="button">Finalizar</a>
                     </div>
                 </div>
             </div>
@@ -61,8 +59,11 @@
                     "session_id": '{{$session->id}}'
                 };
 
-                alert('Iniciado!');
+                $("#btn-iniciar").prop('disabled', true);
+                $("#btn-iniciar").text('Em andamento...');
                 $.post('{{route('simulation.start')}}', data, function () {
+                    $("#btn-iniciar").text('Iniciar');
+                    $("#btn-iniciar").prop('disabled', false);
                     alert('Finalizado');
                 });
             });

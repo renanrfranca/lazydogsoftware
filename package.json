@@ -23,7 +23,7 @@
         "vue-template-compiler": "^2.6.10"
     },
     "dependencies": {
-        "apexcharts": "^3.8.6",
+        "apexcharts": "^3.24.0",
         "laravel-echo": "^1.6.1",
         "pusher-js": "^5.0.3"
     }
